@@ -33,22 +33,17 @@ void TNode_free(TNode* tree) {
 }
 
 /* Add data to a tree, return a pointer to the added node. */
-TNode* TNode_add(TNode* tree, int data) {
-  if (data > tree->data) {
-    if (tree->right == NULL) {
-      tree->right = TNode_new(data);
-      return tree->right;
-    } else {
-      return TNode_add(tree->right, data);
-    }
-  } else {
-    if (tree->left == NULL) {
-      tree->left = TNode_new(data);
-      return tree->left;
-    } else {
-      return TNode_add(tree->left, data);
-    }
+TNode* TNode_add(TNode** tree, int data) {
+  if (*tree == NULL) {
+    *tree = TNode_new(data);
+    return *tree;
   }
+
+  if (data > (*tree)->data) {
+    return TNode_add(&((*tree)->right), data);
+  }
+
+  return TNode_add(&((*tree)->left), data);
 }
 
 void TNode_display_ident(TNode* tree, int ident) {
@@ -82,8 +77,8 @@ int main() {
   tree->left = TNode_new(2);
   tree->left->left = TNode_new(1);
 
-  TNode_add(tree, 6);
-  TNode_add(tree, 0);
+  TNode_add(&tree, 6);
+  TNode_add(&tree, 0);
 
   TNode_display(tree);
   TNode_display_inorder(tree);
